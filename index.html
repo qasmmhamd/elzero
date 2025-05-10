@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>عرض بيانات من قاعدة البيانات</title>
+</head>
+<body>
+  <h1>قائمة المستخدمين</h1>
+  <ul id="userList"></ul>
+  <ul id="userList"></ul>
+
+<!-- داخل script.js راح نضيف زر "تحديث" لكل عنصر -->
+
+
+  <script >fetch('api.php')
+    .then(response => response.json())
+    .then(data => {
+      const list = document.getElementById('userList');
+      list.innerHTML = ''; // ننظف القائمة
+  
+      data.forEach(user => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          الاسم: <input type="text" value="${user.name}" id="name-${user.id}">
+          البريد: ${user.email}
+          <button onclick="updateUser(${user.id})">تحديث</button>
+        `;
+        list.appendChild(li);
+      });
+    });
+  
+  function updateUser(id) {
+    const name = document.getElementById(`name-${id}`).value;
+  
+    fetch('update.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ id: id, name: name })
+    })
+    .then(response => response.json())
+    .then(data => {
+      alert(data.message);
+    });
+  }
+  </script>
+</body>
+</html>
+<!--src="script.js"-->
